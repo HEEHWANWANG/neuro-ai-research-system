@@ -1,0 +1,40 @@
+# AI+Neuroscience Multi-Agent Research System
+# Core Dependencies
+
+# Vector Database
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Deep Learning (Optional - install as needed)
+# torch>=2.0.0
+# torchvision>=0.15.0
+
+# Neuroimaging (Optional - install as needed)
+# nibabel>=5.0.0
+# nilearn>=0.10.0
+
+# Experiment Tracking (Optional)
+# optuna>=3.0.0
+# mlflow>=2.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+pyyaml>=6.0
+tqdm>=4.65.0
+
+# Git Integration (Optional)
+gitpython>=3.1.0
+
+# API Clients (install as needed)
+# anthropic>=0.7.0
+# google-generativeai>=0.3.0
+# arxiv>=1.4.0
+
+# Development
+pytest>=7.0.0
+black>=23.0.0
