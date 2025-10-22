@@ -1,0 +1,95 @@
+{
+  "saved_at": "2025-10-23T02:15:27.952602",
+  "total_documents": 16,
+  "total_size_kb": 206.15,
+  "documents_by_type": {
+    "research_analysis": 1,
+    "introductions": 2,
+    "summaries": 3,
+    "reference": 10
+  },
+  "db_type": "SQLite Vector Database",
+  "db_path": ".claude/workspace/memory/research_vectordb.db",
+  "document_list": [
+    {
+      "file": "fMRI_Foundation_Models_Comparative_Analysis.md",
+      "size_kb": 18.71,
+      "id": "research_analysis_fMRI_Foundation_Models_Comparative_Analysis_12"
+    },
+    {
+      "file": "SwiFT_v2_Draft_Introduction.md",
+      "size_kb": 14.98,
+      "id": "introductions_SwiFT_v2_Draft_Introduction_9"
+    },
+    {
+      "file": "SwiFT_v2_Introduction_Critical_Review_and_Revision.md",
+      "size_kb": 27.81,
+      "id": "introductions_SwiFT_v2_Introduction_Critical_Review_and_Revision_10"
+    },
+    {
+      "file": "EXECUTIVE_SUMMARY.md",
+      "size_kb": 10.92,
+      "id": "summaries_EXECUTIVE_SUMMARY_2"
+    },
+    {
+      "file": "SESSION_SUMMARY_Oct22_2025.md",
+      "size_kb": 9.76,
+      "id": "summaries_SESSION_SUMMARY_Oct22_2025_6"
+    },
+    {
+      "file": "SwiFT_Paper_Summary.md",
+      "size_kb": 10.58,
+      "id": "summaries_SwiFT_Paper_Summary_7"
+    },
+    {
+      "file": "COMPLETION_REPORT.md",
+      "size_kb": 14.15,
+      "id": "reference_COMPLETION_REPORT_1"
+    },
+    {
+      "file": "FAMILIARIZATION_COMPLETE.md",
+      "size_kb": 10.85,
+      "id": "reference_FAMILIARIZATION_COMPLETE_3"
+    },
+    {
+      "file": "README_Research_Documentation.md",
+      "size_kb": 13.3,
+      "id": "reference_README_Research_Documentation_4"
+    },
+    {
+      "file": "RESEARCH_SYNTHESIS_fMRI_Foundation_Models.md",
+      "size_kb": 14.97,
+      "id": "reference_RESEARCH_SYNTHESIS_fMRI_Foundation_Models_5"
+    },
+    {
+      "file": "SwiFT_v2_Development_Quick_Reference.md",
+      "size_kb": 13.55,
+      "id": "reference_SwiFT_v2_Development_Quick_Reference_8"
+    },
+    {
+      "file": "SwiFT_v2_Project_Familiarization.md",
+      "size_kb": 12.46,
+      "id": "reference_SwiFT_v2_Project_Familiarization_11"
+    },
+    {
+      "file": "MANIFEST.md",
+      "size_kb": 9.92,
+      "id": "reference_MANIFEST_13"
+    },
+    {
+      "file": "QUICK_REFERENCE.md",
+      "size_kb": 7.93,
+      "id": "reference_QUICK_REFERENCE_14"
+    },
+    {
+      "file": "RESEARCH_VECTOR_DB_INDEX.md",
+      "size_kb": 11.47,
+      "id": "reference_RESEARCH_VECTOR_DB_INDEX_15"
+    },
+    {
+      "file": "START_HERE.md",
+      "size_kb": 4.77,
+      "id": "reference_START_HERE_16"
+    }
+  ]
+}
