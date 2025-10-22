@@ -80,11 +80,13 @@
 
 ### BrainVLM Project
 **Location**: `projects/BrainVLM/docs/`
-**Status**: ✅ 2 files, 16 KB (expandable)
+**Status**: ✅ 4 files, 43 KB
 
 **Key Documents**:
-1. `BrainVLM_Project_Overview.md` - Complete technical documentation (6.38 KB)
+1. `BrainVLM_Project_Overview.md` - Complete technical documentation (6.78 KB)
 2. `BrainVLM_Quick_Reference.md` - Quick start guide (5.65 KB)
+3. `BRAINVLM_ARCHITECTURE_CLARIFICATION.md` - LLaVa as primary multimodal approach (7.37 KB)
+4. `BRAINVLM_vs_BRAIN_HARMONY_COMPARISON.md` - Comparison with recent Brain Harmony paper (23 KB)
 
 ---
 
@@ -208,26 +210,26 @@ python3 populate_brainvlm_vectordb.py
 ## 📈 FILE STATISTICS
 
 ### Documentation Files
-- **Total**: 19 markdown files
+- **Total**: 21 markdown files
 - **SwiFT_v2 project docs**: 12 files (192 KB)
-- **BrainVLM project docs**: 2 files (16 KB)
+- **BrainVLM project docs**: 4 files (43 KB) - updated with new analysis
 - **System management docs**: 5 files
 - **Reference docs**: 8 files (scattered across root)
 
 ### Databases
 - **SwiFT_v2 database**: 284 KB (16 documents)
-- **BrainVLM database**: 44 KB (2 documents)
-- **Total**: 328 KB
+- **BrainVLM database**: Updated to 43 KB (4 documents indexed)
+- **Total**: ~330 KB
 
 ### Scripts
 - **Utility scripts**: 4 Python files (~20 KB)
 - **All production ready**
 
 ### Total System Size
-- Documentation: 208+ KB
-- Databases: 328 KB
+- Documentation: 235+ KB (includes 43 KB BrainVLM docs)
+- Databases: ~330 KB
 - Scripts: ~20 KB
-- **Total**: ~556 KB
+- **Total**: ~585 KB
 
 ---
 
