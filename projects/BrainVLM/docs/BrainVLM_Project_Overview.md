@@ -14,6 +14,15 @@
 
 ## Project Architecture
 
+### Important: Dual Implementation Approach
+
+**BrainVLM contains TWO separate multimodal approaches:**
+
+1. **BLIP-2 + T5** (`main_Bblip_t5_*.py`): Adapter-based multimodal learning
+2. **LLaVa 1.5-7B** (`main_BLLaVa_*.py`): **Native multimodal vision-language integration** ⭐
+
+The **LLaVa approach** is the primary implementation for multimodal MRI integration with superior clinical reasoning capabilities.
+
 ### Core Components
 
 #### 1. **Models** (`project/model/`)
