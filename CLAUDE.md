@@ -19,11 +19,12 @@ This is a hierarchical multi-agent research system designed for AI+Neuroscience 
 - Runs simulated scientific debates
 - Output: Top 3 evolved hypotheses
 
-**The Forge Pod** 🔬
-- 5 specialized agents  
-- Implements hypotheses as code
-- Runs experiments and analysis
-- Output: Experimental results
+**The Forge Pod** 🔬 ⚡ [SuperClaude Framework Integrated]
+- 5 specialized agents
+- Implements hypotheses as code via SuperClaude `/sc:` commands
+- Runs experiments and analysis with test-driven development
+- Output: Production-ready code + Experimental results
+- **Integration**: Uses SuperClaude's `/sc:design`, `/sc:implement`, `/sc:test`, `/sc:analyze`, `/sc:improve` commands
 
 **The Scribe Pod** ✍️
 - 3 specialized agents
@@ -59,13 +60,63 @@ I want to [your research goal]
 2. **Iteration**: Forge → Hypothesis Engine (reflection) → Forge → Analysis
 3. **Publication**: Gather results → Scribe → Podium
 
+## SuperClaude Framework Integration (Forge Pod)
+
+The **Forge Pod** is now fully integrated with SuperClaude's `/sc:` command system for production-quality code development:
+
+### Available SuperClaude Commands for Forge Pod
+
+| Command | Purpose | Forge Use Case |
+|---------|---------|---|
+| **`/sc:design`** | Architecture & API design | Design data pipelines and model architectures before implementation |
+| **`/sc:implement`** | Feature implementation | Implement PyTorch models, data processors, analysis scripts |
+| **`/sc:test`** | Comprehensive testing | Test-driven development - unit, integration, and E2E tests |
+| **`/sc:analyze`** | Code quality & performance analysis | Identify bottlenecks, verify code correctness, security analysis |
+| **`/sc:improve`** | Refactoring & optimization | Optimize performance, improve readability, reduce technical debt |
+| **`/sc:troubleshoot`** | Debugging | Systematic root cause analysis of failures and errors |
+| **`/sc:explain`** | Code explanation | Explain algorithms, model architectures, implementation details |
+| **`/sc:document`** | Documentation | Generate API docs, function docstrings, README files |
+| **`/sc:build`** | Build & deployment | Package code, manage dependencies, create deployment artifacts |
+| **`/sc:cleanup`** | Code cleanup | Remove dead code, organize project structure, maintain hygiene |
+
+### Forge Pod Development Workflow
+
+```
+Hypothesis Input (from Hypothesis Engine)
+        ↓
+/sc:design → Define architecture and APIs
+        ↓
+/sc:implement → Write production-ready code
+        ↓
+/sc:test → Comprehensive test coverage
+        ↓
+/sc:analyze → Verify quality and performance
+        ↓
+/sc:improve → Optimize and refactor
+        ↓
+/sc:document → Generate documentation
+        ↓
+Output: Ready for Scribe/Podium pods
+```
+
+### Key Benefits of SuperClaude Integration
+
+1. **Quality Assurance**: Every code step includes design, implementation, testing, and analysis
+2. **Reproducibility**: Test-driven development ensures results are reproducible
+3. **Documentation**: Automatic documentation generation for all code
+4. **Optimization**: Performance analysis and improvement built-in
+5. **Debugging**: Systematic troubleshooting for issues
+6. **Scalability**: Organized, maintainable code structure
+
 ## Best Practices
 
 - Always start through @supervisor for complex workflows
 - Let evolution loops complete (3 iterations recommended)
+- **For Forge Pod**: Use `/sc:` commands throughout entire development cycle (not ad-hoc coding)
 - Review `.claude/workspace/hypotheses/research_overview.md` before implementation
 - Archive completed work by date
 - Use "think hard" for complex research planning
+- Ensure all Forge code includes tests (`/sc:test`), analysis (`/sc:analyze`), and documentation (`/sc:document`)
 
 ## External Dependencies
 
