@@ -142,6 +142,39 @@ Copy `.env.template` to `.env` and configure:
 - Vector DB settings
 - System parameters
 
+## Academic Research Integration
+
+The **Hypothesis Engine Pod** has access to three academic research MCP servers:
+
+### ArXiv MCP Server
+- **Access**: 1.2M+ papers from arXiv.org
+- **Best For**: Latest AI/ML techniques, preprints, computer science papers
+- **Tools**: `search_arxiv`, `get_arxiv_paper`, `deep_paper_analysis`
+- **Install**: `npx -y @smithery/cli install arxiv-mcp-server --client claude`
+
+### Google Scholar MCP Server
+- **Access**: Broad academic search with citation counts and author profiles
+- **Best For**: Citation impact, author networks, publication discovery
+- **Tools**: `search_google_scholar_keywords`, `get_author_profile`
+- **Install**: `npx -y @smithery/cli install google-scholar-mcp-server --client claude`
+
+### PubMed MCP Server
+- **Access**: 30M+ biomedical articles from PubMed/NIH
+- **Best For**: Clinical evidence, disease-specific literature, biomedical research
+- **Tools**: `search_pubmed_keywords`, `search_pubmed_advanced`, `download_pubmed_pdf`
+- **Install**: `npx -y @smithery/cli install @JackKuo666/pubmed-mcp-server --client claude`
+
+### Usage Example
+```
+@neurolit-agent
+"Search literature on Vision Transformers for brain imaging:
+- ArXiv: Latest techniques
+- Google Scholar: Citation impact
+- PubMed: Clinical validation"
+```
+
+See `.claude/MCP_ACADEMIC_SEARCH_INTEGRATION.md` for detailed configuration and usage.
+
 ## Notes
 
 - This system uses Claude Code's subagent feature
@@ -149,7 +182,12 @@ Copy `.env.template` to `.env` and configure:
 - Agents communicate via filesystem (prevents information loss)
 - Parallel execution maximizes test-time compute
 - Extended thinking ("think hard") used for complex planning
+- Academic search MCPs enable literature-driven hypothesis generation
+- Forge Pod uses SuperClaude framework for production-quality code
 
 ---
 
-For detailed documentation, see README.md
+For detailed documentation:
+- **Forge Pod Integration**: See `.claude/FORGE_POD_SUPERCLAUADE_INTEGRATION.md`
+- **Academic Search MCPs**: See `.claude/MCP_ACADEMIC_SEARCH_INTEGRATION.md`
+- **Project Overview**: See README.md
