@@ -83,6 +83,14 @@ This index provides quick navigation to all benchmark-related documentation and 
    - Manuscript integration
    - Timeline and success criteria
 
+4. **`DATASETS_FOR_EVALUATION.md`** (📋 NEW - Dataset specifications)
+   - ADNI dataset (primary evaluation dataset)
+   - HCP-Aging dataset (secondary evaluation dataset)
+   - Paper-derived dataset information
+   - Data access and preprocessing guidelines
+   - Quality control standards
+   - Integration with benchmark framework
+
 ---
 
 ## Key Comparison Dimensions
