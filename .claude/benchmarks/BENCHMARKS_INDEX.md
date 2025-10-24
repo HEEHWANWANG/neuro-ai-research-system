@@ -83,13 +83,21 @@ This index provides quick navigation to all benchmark-related documentation and 
    - Manuscript integration
    - Timeline and success criteria
 
-4. **`DATASETS_FOR_EVALUATION.md`** (📋 NEW - Dataset specifications)
+4. **`DATASETS_FOR_EVALUATION.md`** (📋 Dataset specifications)
    - ADNI dataset (primary evaluation dataset)
    - HCP-Aging dataset (secondary evaluation dataset)
    - Paper-derived dataset information
    - Data access and preprocessing guidelines
    - Quality control standards
    - Integration with benchmark framework
+
+5. **`DOWNSTREAM_EVALUATION_TASKS.md`** (📋 NEW - Task definitions)
+   - Task 1: MCI-to-AD Conversion Prediction (neurodegenerative domain)
+   - Task 2: Antidepressant Response Prediction (psychiatric domain)
+   - Task 3: Pain-Evoked Brain State Classification (functional domain)
+   - Clinical significance and evaluation protocols
+   - Implementation workflow and expected outcomes
+   - Unified benchmark suite specifications
 
 ---
 
