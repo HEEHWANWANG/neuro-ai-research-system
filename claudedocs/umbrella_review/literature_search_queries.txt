@@ -1,0 +1,67 @@
+# Primary Search Queries for UMBRELLA Novelty Assessment
+
+## Query Set 1: Vision-Language Models + Medical Imaging (2023-2025)
+1. "vision language model" "medical imaging" 2024 2025
+2. "BLIP-2" "medical imaging" OR "radiology"
+3. "LLaVA" "medical" OR "radiology" OR "clinical"
+4. "multimodal" "medical report generation" 2024
+5. "vision language" "brain MRI" OR "neuroimaging"
+
+## Query Set 2: Neuroimaging Foundation Models (2023-2025)
+6. "brain MRI" "foundation model" 2024 2025
+7. "fMRI" "vision transformer" 2023 2024
+8. "neuroimaging" "large language model"
+9. "brain imaging" "multimodal learning" 2024
+10. "structural MRI" "functional MRI" "fusion" "deep learning"
+
+## Query Set 3: Medical Report Generation (2022-2025)
+11. "medical report generation" "deep learning" 2024
+12. "radiology report" "automatic generation" 2023 2024
+13. "chest X-ray" "report generation" "transformer"
+14. "medical image captioning" 2024
+15. "clinical report" "generation" "vision language"
+
+## Query Set 4: Text-as-Task in Medical AI (2023-2025)
+16. "text generation" "medical imaging" "classification"
+17. "T5" "medical" "imaging" OR "radiology"
+18. "generative AI" "medical imaging" 2024
+19. "language model" "medical image analysis"
+20. "text-based" "medical AI" 2024
+
+## Query Set 5: Multi-modal Fusion Medical (2023-2025)
+21. "multimodal fusion" "brain imaging" 2024
+22. "multi-modal" "neuroimaging" "deep learning"
+23. "structured data" "imaging" "fusion" "medical"
+24. "tabular data" "medical imaging" "integration"
+25. "demographics" "brain MRI" "machine learning"
+
+## Query Set 6: Specific Comparisons
+26. "BLIP-2" "CLIP" "medical" 
+27. "LLaVA" "instruction tuning" "medical"
+28. "vision encoder" "medical imaging" "transfer learning"
+29. "3D medical imaging" "vision language model"
+30. "brain" "vision language" OR "visual language"
+
+## Query Set 7: arXiv Specific (Recent)
+31. site:arxiv.org "medical imaging" "vision language model" after:2023
+32. site:arxiv.org "brain MRI" "transformer" after:2024
+33. site:arxiv.org "neuroimaging" "multimodal" after:2023
+34. site:arxiv.org "radiology report generation" after:2023
+
+## Query Set 8: Conference Proceedings
+35. "MICCAI 2024" "vision language" OR "report generation"
+36. "NeurIPS 2024" "medical imaging" OR "neuroimaging"
+37. "CVPR 2024" "medical" "multimodal"
+38. "ICCV 2023" "medical imaging" "language"
+
+## Query Set 9: Specific Techniques
+39. "caption" "medical imaging" "training"
+40. "prompt engineering" "medical imaging" 2024
+41. "instruction tuning" "medical" "vision"
+42. "patchify" OR "patch embedding" "3D" "medical"
+
+## Query Set 10: Clinical Applications
+43. "cognitive assessment" "MRI" "AI" 2024
+44. "MCI" OR "Alzheimer" "brain imaging" "deep learning"
+45. "neurological" "report" "automatic generation"
+46. "clinical decision support" "brain MRI" "AI"
