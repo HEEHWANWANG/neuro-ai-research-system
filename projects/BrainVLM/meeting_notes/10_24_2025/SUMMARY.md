@@ -23,16 +23,24 @@ This report analyzes two parallel experimental tracks applying vision-language m
 ### 1.1 Experimental Design
 
 **Dataset:** ABCD (Adolescent Brain Cognitive Development), N≈12,000
+- **Imaging Modality:** T1-weighted structural MRI (sMRI)
+- **Dataset Property:** Sex-balanced for classification task
 **Task:** Binary sex classification via text generation
 **Input:** T1-weighted MRI images
 **Metric:** Classification accuracy
 **Objective:** Design optimal prompting strategies for neuroimaging VLM applications
 
 **Architecture Configuration:**
-- Patch Embedding: Trainable ✓
-- Visual Encoder: Frozen ✓
+- Patch Embedding: Trainable ✓ (randomly initialized for 3D→2D adaptation)
+- Visual Encoder: Frozen ✓ (pre-trained on natural images)
 - **Multi-modal Projector: Frozen ✗ (CRITICAL ISSUE)**
 - Language Model: Frozen ✓
+
+**Critical Fine-tuning Strategy Note:**
+Only patchifying layer and positional embeddings are trained during Step 1:
+- **Patchifying layer** (random init): Adapts 3D/4D MRI volumes to 2D patch representation
+- **Positional embeddings** (random init): Re-learns spatial encoding for volumetric data (vs. original 2D)
+- **Rationale:** EVA-CLIP encoder trained on 2D natural images; patchifying and positional encoding must be adapted to 3D brain MRI structure
 
 ### 1.2 Experiment 1: Training QnA → Inference QnA (Format Consistency)
 
@@ -135,10 +143,11 @@ The multi-modal projector serves as the bridge between vision and language embed
 ### 2.1 Experimental Design
 
 **Model:** EVA-ViT (vision encoder from EVA-CLIP: arXiv:2303.15389)
-**Dataset:** GARD
+**Dataset:** GARD (with target label clarification below)
 **Tasks:**
 - Age prediction (N=4,201)
 - MMSE score prediction (N=1,905)
+  - **MMSE Clarification:** MMSE (Mini-Cog State Examination) is NOT a dataset name. MMSE is a cognitive screening tool score from the GARD dataset. It measures cognitive ability via questionnaire and behavioral tests. We predict MMSE score from T1-weighted sMRI.
 
 **Metric:** Test R² (coefficient of determination)
 **Objective:** Compare pretrained vs scratch training, evaluate loss function effectiveness
