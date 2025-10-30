@@ -38,16 +38,22 @@ This architectural equivalence remains critically important, but its implication
 **Current Experimental Status**: THIS IS WHERE WE ARE NOW
 
 **Configuration**:
-- Patchifying layer: **TRAINABLE** ✓
-- Vision encoder: **FROZEN** ✓ (EVA-CLIP, CLIP ViT)
+- Patchifying layer: **TRAINABLE** ✓ (adapts 3D/4D MRI to 2D patches)
+- Positional embeddings: **TRAINABLE** ✓ (learns 3D spatial encoding)
+- Attention blocks: **FROZEN** ✓ (EVA-CLIP core vision encoder preserved)
 - Multi-modal projector: **FROZEN** ✓ (Q-Former for BLIP-2, projection for LLaVA)
 - Language model: **FROZEN** ✓ (T5-XL, LLaVA-7B)
 
+**Architecture Rationale (Conservative Fine-tuning)**:
+- Freeze attention blocks: Preserve pre-trained visual feature learning from natural images
+- Train patchifying layer: Adapt input processing from 2D natural images to 3D/4D brain MRI
+- Train positional embeddings: Re-learn spatial encoding for volumetric data (vs. original 2D spatial)
+
 **What This Achieves**:
-- Adapts 3D/4D MRI data to 2D natural image patch space
-- Learns: "How to represent brain structure as features vision encoder can understand"
-- Low risk: Frozen components preserve pre-trained knowledge
-- Quick training: Only patchifying weights update
+- Adapts 3D/4D MRI data to 2D natural image patch space via trainable patchifying
+- Learns: "How to represent brain structure as features frozen vision encoder can understand"
+- Low risk: Frozen attention blocks preserve pre-trained knowledge (no catastrophic forgetting)
+- Quick training: Only adapter layers (patchifying + positional embeddings) update
 
 **Current Results** (Janice's experiments):
 - Age R²=0.1254 (EVA_ViT baseline)

@@ -380,10 +380,11 @@ Target: Close gap while adding text generation capability
 
 1. **Janice's EVA_ViT experiments** (GARD, age/MMSE regression):
    - **Purpose**: Feasibility check - can vision encoders adapt to MRI?
-   - **Method**: Frozen EVA-CLIP encoder + trainable patchifying + regression head
+   - **Method**: Frozen attention blocks (EVA-CLIP core) + trainable patchifying layer + trainable positional embeddings + regression head
+   - **Architecture**: Conservative fine-tuning strategy (freeze core encoder, train adapter layers)
    - **Achievement**: Age R²=0.1254, MMSE R²=0.0183
    - **Status**: ✅ Feasibility validated - proceed to VLMs
-   - **Role in UMBRELLA**: Baseline for vision-only performance
+   - **Role in UMBRELLA**: Baseline for vision-only performance with conservative freezing strategy
 
 2. **Suin Cho's LLaVA experiments** (ABCD, sex classification):
    - **Purpose**: Validate VLMs can generate text from brain MRI

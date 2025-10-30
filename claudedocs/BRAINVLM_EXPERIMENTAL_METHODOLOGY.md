@@ -32,14 +32,22 @@ This document clarifies the **intentional experimental progression** in the UMBR
 ```
 Natural Image Pre-trained Vision Encoder (EVA-CLIP)
     ↓
-Patchifying Layer (adapts 3D MRI → 2D patches)
+Patchifying Layer (adapts 3D MRI → 2D patches) [TRAINED]
     ↓
-Vision Encoder (frozen, uses ImageNet knowledge)
+Positional Embeddings [TRAINED - re-learns 3D spatial encoding]
+    ↓
+Attention Blocks (frozen, preserves ImageNet knowledge)
     ↓
 Regression Head (trainable)
     ↓
 Numerical Prediction (age, MMSE)
 ```
+
+**Architecture Configuration:**
+- Attention blocks (core vision encoder): FROZEN
+- Patchifying layer: TRAINED (adapts 3D→2D patches)
+- Positional embeddings: TRAINED (learns volumetric spatial encoding)
+- Regression head: TRAINED (task-specific output)
 
 #### Results (Janice's Experiments)
 - Age: R²=0.1254 (12.5% variance explained)
@@ -47,9 +55,10 @@ Numerical Prediction (age, MMSE)
 
 #### Critical Validation Achieved
 ✅ **Vision encoder adaptation to MRI is possible**
-- Pre-trained encoders can process brain MRI patches
-- Frozen encoder preserves >95% ImageNet performance
-- Patchifying layer successfully bridges 3D→2D gap
+- Pre-trained attention blocks can process brain MRI patches
+- Frozen attention blocks preserve pre-trained visual feature learning
+- Patchifying layer and positional embeddings successfully adapt to 3D MRI
+- Conservative fine-tuning strategy (freeze attention blocks, train adapters only)
 
 ✅ **Justifies moving to vision-language models**
 - Positive (non-zero) R² proves concept viability
