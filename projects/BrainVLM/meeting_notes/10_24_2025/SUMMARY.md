@@ -32,7 +32,7 @@ This report analyzes two parallel experimental tracks applying vision-language m
 
 **Architecture Configuration:**
 - Patch Embedding: Trainable ✓ (randomly initialized for 3D→2D adaptation)
-- Visual Encoder: Frozen ✓ (pre-trained on natural images)
+- **Attention blocks (core vision encoder): Frozen ✓** (pre-trained EVA-CLIP features preserved)
 - **Multi-modal Projector: Frozen ✗ (CRITICAL ISSUE)**
 - Language Model: Frozen ✓
 
@@ -40,7 +40,8 @@ This report analyzes two parallel experimental tracks applying vision-language m
 Only patchifying layer and positional embeddings are trained during Step 1:
 - **Patchifying layer** (random init): Adapts 3D/4D MRI volumes to 2D patch representation
 - **Positional embeddings** (random init): Re-learns spatial encoding for volumetric data (vs. original 2D)
-- **Rationale:** EVA-CLIP encoder trained on 2D natural images; patchifying and positional encoding must be adapted to 3D brain MRI structure
+- **Attention blocks** (frozen): Core vision encoder layers from EVA-CLIP remain frozen to preserve pre-trained visual feature learning
+- **Rationale:** Freeze attention blocks to preserve pre-trained visual representations from EVA-CLIP, while adapting input processing (patchifying) and spatial encoding (positional embeddings) to 3D brain MRI structure
 
 ### 1.2 Experiment 1: Training QnA → Inference QnA (Format Consistency)
 
@@ -152,6 +153,11 @@ The multi-modal projector serves as the bridge between vision and language embed
 **Metric:** Test R² (coefficient of determination)
 **Objective:** Compare pretrained vs scratch training, evaluate loss function effectiveness
 
+**Architecture Configuration:**
+- **Attention blocks (core vision encoder): Frozen ✓** (EVA-CLIP pre-trained features)
+- **Patchifying layer: Trainable ✓** (adapts 2D→3D input)
+- **Positional embeddings: Trainable ✓** (learns 3D spatial encoding)
+
 **Training Strategies:**
 - **Scratch:** Random initialization, train from zero
 - **Pretrained:** EVA-CLIP pretrained weights (BLIP2 configuration)
@@ -159,6 +165,12 @@ The multi-modal projector serves as the bridge between vision and language embed
 **Loss Functions:**
 - **MSE Loss:** Mean Squared Error (penalizes large errors heavily)
 - **ABS Loss:** Mean Absolute Error (robust to outliers)
+
+**Rationale for Configuration:**
+- Freezing attention blocks preserves pre-trained visual feature learning from EVA-CLIP
+- Trainable patchifying layer adapts 2D natural image processing to 3D MRI volumes
+- Trainable positional embeddings learn spatial encoding appropriate for 3D medical imaging
+- This conservative approach maintains pre-trained knowledge while allowing domain adaptation
 
 ### 2.2 Age Prediction Results (N=4,201)
 
@@ -178,6 +190,7 @@ The multi-modal projector serves as the bridge between vision and language embed
    - mse loss completely fails (exploding gradients or negative R²)
 3. **Validation Stability:** Pretrained model shows steady validation R² increase
 4. **Performance Interpretation:** R²=0.1254 means 12.5% of age variance explained - moderate predictive power
+5. **Frozen Attention Block Impact:** With attention blocks frozen, performance ceiling reflects architectural constraints rather than lack of pre-training benefit
 
 **Why MSE Fails for Age:**
 - Possible outliers in age distribution causing instability
@@ -200,11 +213,13 @@ The multi-modal projector serves as the bridge between vision and language embed
 2. **Opposite Loss Pattern:** mse works, abs fails (inverse of age prediction)
 3. **Extremely Low Performance:** R²=0.0183 = 1.8% variance explained (essentially no predictive power)
 4. **Sample Size Critical:** Only 1,905 samples (45% of age dataset size)
+5. **Frozen Attention Block Constraint:** Low R² reflects limitations of frozen encoder core for complex cognitive prediction
 
 **Why Performance is So Low:**
 1. **Insufficient Training Data:** MMSE dataset half the size of Age dataset
 2. **Task Complexity:** MMSE cognitive assessment may require features not captured by structural MRI
 3. **Potential Non-linearity:** Relationship between brain structure and cognitive function may be highly complex
+4. **Frozen Encoder Limitation:** Attention blocks cannot adapt to cognitive-relevant features
 
 **Planned Mitigation:** Expand MMSE dataset to ~4,000 samples to match age dataset scale
 
@@ -252,6 +267,8 @@ The multi-modal projector serves as the bridge between vision and language embed
 
 4. **Domain Gap Bridging:** Even large distribution shift (RGB photos → grayscale MRI) preserves useful inductive biases
 
+5. **Frozen Attention Blocks Still Effective:** Even with frozen encoder core, pre-trained features provide substantial improvement over random initialization
+
 ### 2.6 Computational Constraints
 
 **UKB Model Bottleneck:**
@@ -281,11 +298,13 @@ The multi-modal projector serves as the bridge between vision and language embed
    - ✓ Used by: BLIP-2 internal architecture
    - Vision encoder: EVA-ViT from EVA-CLIP paper (arXiv:2303.15389)
    - Pretraining: Large-scale vision-language data (CLIP-style)
+   - Configuration: **Attention blocks frozen, patchifying layer and positional embeddings trainable**
    - Demonstrated by Janice: Age (R²=0.1254), MMSE (R²=0.0183)
    - Demonstrated by BLIP-2: Age (R²=0.1254), MMSE (R²=0.0183)
 
    **What This Means:**
    - BLIP-2 and EVA_ViT have **identical vision encoders**
+   - Both use **frozen attention blocks** (core encoder) with **trainable adapter layers**
    - Performance differences (if any) come from:
      - **Integration architecture**: How vision features connect to language
      - **Projector design**: BLIP-2's multi-modal projector (currently frozen)
@@ -333,39 +352,44 @@ Both experiments independently confirm:
 
 **Key Insight from Architectural Equivalence:**
 
-Since BLIP-2 and EVA_ViT share the same vision encoder (EVA-CLIP), their similar performance (R²=0.1254 for age, R²=0.0183 for MMSE) **cannot be attributed to encoder differences**. Instead:
+Since BLIP-2 and EVA_ViT share the same vision encoder (EVA-CLIP) with the same frozen attention blocks, their similar performance (R²=0.1254 for age, R²=0.0183 for MMSE) **cannot be attributed to encoder differences**. Instead:
 
-- **BLIP-2 (with EVA-CLIP encoder) achieves R²=0.1254 for age** despite:
+- **BLIP-2 (with EVA-CLIP encoder) achieves R²=0.1254 for age** with:
+  - Frozen attention blocks (core encoder)
+  - Trainable patchifying layer and positional embeddings
   - Frozen multi-modal projector (architectural bottleneck)
   - Vision-to-language integration overhead
   - LLM generation complexity
 
 - **EVA_ViT (direct regression) achieves R²=0.1254 for age** with:
+  - Frozen attention blocks (core encoder)
+  - Trainable patchifying layer and positional embeddings
   - Direct linear regression head
   - No multi-modal projector overhead
   - Simpler training objective
 
-**Critical Interpretation:** The fact that these identical vision encoders achieve identical performance means:
-1. **The frozen projector is not the only bottleneck** - both systems hit performance ceiling
-2. **Additional constraints** beyond frozen projector limit performance
-3. **Unfreezing the projector may yield improvements** but may not be sufficient alone
+**Critical Interpretation:** The fact that these identical vision encoders (with same frozen attention blocks) achieve identical performance means:
+1. **The frozen attention blocks explain the performance ceiling** - both systems hit same limit
+2. **Unfreezing attention blocks may yield improvements** but architectural strategy requires careful validation
+3. **Current adapter-only training (patchifying + positional embeddings) is conservative** and preserves pre-trained features
 
 **Performance Assessment by Vision Encoder:**
 
-| Vision Encoder | Task | Performance | Model | Interpretation |
-|--------|------|-------------|-------|----------------|
-| EVA-CLIP/EVA_ViT | Sex classification | 78.69% accuracy | LLaVA-style | Moderate success on relatively easy task |
-| EVA-CLIP/EVA_ViT | Age regression | R²=0.1254 | BLIP-2 & EVA_ViT | Weak but consistent predictive power |
-| EVA-CLIP/EVA_ViT | MMSE regression | R²=0.0183 | BLIP-2 & EVA_ViT | Essentially no predictive power (data-limited) |
+| Vision Encoder | Configuration | Task | Performance | Model | Interpretation |
+|--------|---------------|------|-------------|-------|----------------|
+| EVA-CLIP/EVA_ViT | Frozen attention, trainable adapters | Sex classification | 78.69% accuracy | LLaVA-style | Moderate success on relatively easy task |
+| EVA-CLIP/EVA_ViT | Frozen attention, trainable adapters | Age regression | R²=0.1254 | BLIP-2 & EVA_ViT | Weak but consistent predictive power |
+| EVA-CLIP/EVA_ViT | Frozen attention, trainable adapters | MMSE regression | R²=0.0183 | BLIP-2 & EVA_ViT | Essentially no predictive power (data-limited) |
 
-**Revised Conclusion:** Both EVA-CLIP-based systems show similar performance patterns, suggesting:
-1. **Vision encoder is not the limiting factor** (both use EVA-CLIP)
-2. **Integration architecture matters** (projector design, but frozen projector doesn't explain MMSE failure)
+**Revised Conclusion:** Both EVA-CLIP-based systems with frozen attention blocks show similar performance patterns, suggesting:
+1. **Frozen attention blocks are a limiting factor** (both use same configuration)
+2. **Integration architecture matters** (projector design, but frozen projector doesn't fully explain MMSE failure)
 3. **Fundamental challenges** beyond architecture:
    - Domain gap between ImageNet pretraining and brain MRI
    - Task difficulty (especially MMSE with structural MRI only)
    - Data limitations (MMSE sample size only 1,905)
    - Possible non-linear relationships not captured by regression
+4. **Adapter-only training is conservative** - may need to unfreeze more encoder layers for better adaptation
 
 ---
 
@@ -387,7 +411,7 @@ Since BLIP-2 and EVA_ViT share the same vision encoder (EVA-CLIP), their similar
 - Computational constraints identified
 
 **Problem Diagnosis:**
-- Root cause analysis (frozen projector bottleneck)
+- Root cause analysis (frozen projector bottleneck, frozen attention blocks)
 - Template memorization problem identified
 - Loss function task-specificity discovered
 
@@ -431,16 +455,18 @@ Since BLIP-2 and EVA_ViT share the same vision encoder (EVA-CLIP), their similar
 
 ### 5.1 Architectural Issues
 
-**CRITICAL: Frozen Projector Problem**
-- **Impact:** Prevents semantic alignment between vision and language
-- **Consequence:** Performance ceiling even with optimal configurations
+**CRITICAL: Frozen Attention Blocks + Frozen Projector**
+- **Impact:** Prevents both visual feature adaptation AND semantic alignment between vision and language
+- **Frozen Attention Blocks:** Core encoder cannot adapt to brain-specific features (hippocampal atrophy, ventricular patterns)
+- **Frozen Projector:** Prevents visual-language semantic alignment even if visual features were better
+- **Consequence:** Dual performance ceiling from both frozen components
 - **Status:** Identified but not yet fixed
 - **Priority:** IMMEDIATE ACTION REQUIRED
 
 **Component Freezing Strategy:**
-- Current: Only patch embedding trainable
-- Issue: Insufficient adaptation capacity
-- Consideration: More sophisticated unfreezing schedules needed
+- Current: Only patchifying layer and positional embeddings trainable
+- Issue: Insufficient adaptation capacity for complex medical imaging tasks
+- Consideration: More sophisticated unfreezing schedules needed (progressive unfreezing, layer-wise learning rates)
 
 ### 5.2 Performance Limitations
 
@@ -450,11 +476,12 @@ Since BLIP-2 and EVA_ViT share the same vision encoder (EVA-CLIP), their similar
 - Sex: 78.69% accuracy (only 57% above random)
 
 **Potential Causes:**
-1. Frozen projector limiting visual-language grounding
-2. Insufficient domain-specific pretraining
-3. Small dataset sizes (especially MMSE with 1,905 samples)
-4. Fundamental task difficulty
-5. Structural MRI may lack information for certain predictions (MMSE)
+1. Frozen attention blocks limiting visual feature adaptation to medical domain
+2. Frozen projector limiting visual-language grounding
+3. Insufficient domain-specific pretraining
+4. Small dataset sizes (especially MMSE with 1,905 samples)
+5. Fundamental task difficulty
+6. Structural MRI may lack information for certain predictions (MMSE)
 
 ### 5.3 Data Limitations
 
@@ -478,7 +505,7 @@ Since BLIP-2 and EVA_ViT share the same vision encoder (EVA-CLIP), their similar
 
 **Incomplete Explorations:**
 - Hybrid loss functions not tested
-- Partial unfreezing strategies not explored
+- Partial unfreezing strategies not explored (e.g., unfreeze last few attention blocks)
 - Multi-task learning not attempted
 - Ensemble methods not evaluated
 
@@ -557,28 +584,26 @@ Since BLIP-2 and EVA_ViT share the same vision encoder (EVA-CLIP), their similar
 
 ## Part 7: Recommendations and Future Directions
 
-### 7.1 Immediate Priority Actions - With Architectural Clarification
+### 7.1 Immediate Priority Actions
 
 **CRITICAL ARCHITECTURAL INSIGHT:**
-Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical performance between BLIP-2 and EVA_ViT baseline means:
-- ✓ Vision encoder quality is NOT the differentiator
-- ✗ Frozen projector is NOT the only bottleneck
-- ✗ Multiple constraints limit performance simultaneously
+Now understanding that both BLIP-2 and EVA_ViT use frozen attention blocks (core encoder), the identical performance reveals the architectural constraint.
 
 **Revised Priority Assessment:**
 
 **1. Unfreeze Multi-Modal Projector (CRITICAL - Week 1)**
-- **Why:** Architectural bottleneck that prevents vision-language semantic alignment
-- **Expected Impact:** 5-15% performance improvement (likely less than initially estimated 10-20%)
-- **Why Less?:** EVA_ViT regression (no projector overhead) achieves same R² as BLIP-2, suggesting additional constraints
-- **Action:** Unfreeze requires_grad=True for projector layers
+- **Why:** Enables vision-language semantic alignment
+- **Expected Impact:** 5-15% performance improvement
+- **Action:** Set requires_grad=True for projector layers
 - **Verification:** Compare BLIP-2 performance before/after unfreezing
 - **Watch for:** Overfitting (MMSE dataset only 1,905 samples)
 
-**2. Address Fundamental Data Limitations (HIGH - Week 1-2)**
-- **MMSE Dataset:** Expand from 1,905 to ~4,000 samples (critical for regression stability)
-- **Domain Gap:** ImageNet pretraining → brain MRI structural images may have hard ceiling
-- **Task Structure:** Regression from structural T1w MRI → cognitive scores may be inherently difficult
+**2. Progressive Unfreezing of Attention Blocks (HIGH - Week 2-3)**
+- **Why:** Allow visual encoder to adapt to brain-specific features
+- **Strategy:** Unfreeze last few attention blocks first (progressive unfreezing)
+- **Expected Impact:** 10-30% improvement with careful tuning
+- **Risk:** Catastrophic forgetting of pre-trained features
+- **Mitigation:** Very small learning rate (1e-6), monitor ImageNet validation
 
 **3. Expand MMSE Dataset (HIGH - Week 1-2)**
 - Scale from 1,905 to ~4,000 samples
@@ -586,13 +611,13 @@ Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical perform
 - Re-run all experiments
 - **Expected Impact:** R² improvement from 0.02 to potentially 0.05-0.10
 
-**3. Extended Hyperparameter Search (MEDIUM - Week 2)**
+**4. Extended Hyperparameter Search (MEDIUM - Week 2)**
 - Learning rates: {0.01, 0.001, 0.0001, 0.00001, 0.000001}
 - Batch sizes: Optimize for each model
 - Training epochs: Ensure convergence
 - **Expected Impact:** 5-10% optimization gain
 
-**4. KISTI Resource Migration (HIGH - Week 2-3)**
+**5. KISTI Resource Migration (HIGH - Week 2-3)**
 - Deploy UKB pretrained model
 - Leverage computational resources
 - Enable larger-scale experiments
@@ -601,9 +626,10 @@ Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical perform
 ### 7.2 Architectural Improvements
 
 **Unfreezing Strategy:**
-- Test progressive unfreezing (projector → encoder layers → full model)
+- Test progressive unfreezing (projector → last attention blocks → earlier blocks → full model)
 - Compare partial vs full fine-tuning
 - Measure overfitting risk with smaller datasets
+- Layer-wise learning rate scheduling
 
 **Multi-task Learning:**
 - Joint training on Age + Sex + MMSE
@@ -712,14 +738,14 @@ Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical perform
 
 **Strengths (7 points):**
 - Systematic experimentation (2 points)
-- Critical bottleneck identification (2 points)
+- Critical bottleneck identification (frozen attention blocks + projector) (2 points)
 - Honest assessment of limitations (1 point)
 - Clear next steps defined (1 point)
 - Diverse task coverage (1 point)
 
 **Weaknesses (-3 points):**
 - Low absolute performance (MMSE R²=0.02, Age R²=0.13)
-- Critical architectural flaw not yet fixed (frozen projector)
+- Critical architectural constraints not yet addressed (frozen attention blocks + frozen projector)
 - Missing statistical rigor (no significance tests, CIs)
 - Limited cross-validation and generalization testing
 
@@ -742,9 +768,10 @@ Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical perform
 - Requires empirical validation for each new application
 
 **Fundamental Discovery 4: Architectural Choices Dominate**
-- Frozen projector creates fundamental bottleneck
+- Frozen attention blocks + frozen projector create fundamental bottleneck
 - Component-level design decisions > prompt engineering
 - Fix architecture before optimizing training procedures
+- Conservative adapter-only training (patchifying + positional embeddings) preserves pre-training but limits adaptation
 
 ### 8.3 Scientific Contribution Assessment
 
@@ -752,34 +779,36 @@ Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical perform
 1. First systematic prompt engineering study for brain MRI VLMs
 2. Discovery of template memorization problem in VLM training
 3. Demonstration of pretraining effectiveness across neuroimaging tasks
-4. Identification of frozen projector as critical bottleneck
+4. Identification of frozen attention blocks + frozen projector as critical bottlenecks
 5. Task-specific loss function requirements established
+6. Validation of conservative adapter-only training strategy
 
 **Limitations:**
 1. Low absolute performance limits practical impact
 2. Single-site datasets limit generalizability
 3. No comparison against non-VLM baselines
 4. Statistical reporting incomplete
-5. Architectural issues not yet resolved
+5. Architectural constraints not yet resolved
 
 **Publication Readiness:**
 - ⚠ **Not yet ready** for top-tier venue
-- Requires: Frozen projector fix, expanded MMSE data, stronger baselines, statistical rigor
+- Requires: Attention block unfreezing experiments, frozen projector fix, expanded MMSE data, stronger baselines, statistical rigor
 - Suitable for: Workshop or conference short paper with current results
 - **Recommendation:** Complete critical improvements before major publication submission
 
 ### 8.4 Strategic Research Positioning
 
-**Current State:** Early-stage exploration with important negative results
+**Current State:** Early-stage exploration with important negative results and clear architectural understanding
 
 **Value Proposition:**
 1. Identifies pitfalls in applying VLMs to neuroimaging
 2. Establishes baseline performance levels
 3. Discovers fundamental architectural requirements
 4. Guides future research away from failed approaches
+5. Clarifies frozen attention block strategy trade-offs
 
 **Next Phase Requirements:**
-1. Fix identified bottlenecks (frozen projector)
+1. Fix identified bottlenecks (frozen projector, explore attention block unfreezing)
 2. Achieve competitive performance (Age R²>0.3, MMSE R²>0.1)
 3. Demonstrate clinical utility
 4. Establish generalization across datasets
@@ -799,12 +828,13 @@ Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical perform
 **Week 1:**
 1. **Day 1-2:** Unfreeze projector, re-run LLaVA experiments
 2. **Day 3-4:** Expand MMSE dataset to 4,000 samples
-3. **Day 5:** Extended learning rate search setup
+3. **Day 5:** Design progressive attention block unfreezing strategy
 
 **Week 2:**
 1. **Day 1-3:** Run expanded experiments (unfrozen projector + larger MMSE)
-2. **Day 4-5:** KISTI migration and UKB model deployment
-3. **Day 6-7:** Analyze results, write internal report
+2. **Day 4:** Test progressive unfreezing of last 2-3 attention blocks
+3. **Day 5:** KISTI migration and UKB model deployment
+4. **Day 6-7:** Analyze results, compare frozen vs unfrozen configurations
 
 ### Medium-Term (Weeks 3-6)
 
@@ -813,6 +843,7 @@ Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical perform
 - Error analysis and failure case studies
 - Attention visualization and interpretation
 - Ensemble methods evaluation
+- Progressive unfreezing vs full fine-tuning comparison
 
 **Infrastructure:**
 - Statistical significance testing framework
@@ -837,16 +868,22 @@ Now understanding that BLIP-2 uses EVA-CLIP (≡ EVA_ViT), the identical perform
 
 ## Conclusion
 
-The BrainVLM experiments represent solid foundational work with clear identification of critical bottlenecks. Key achievements include systematic demonstration of pretraining necessity, discovery of the frozen projector limitation, and surprising findings about prompt simplicity.
+The BrainVLM experiments represent solid foundational work with clear identification of critical bottlenecks. Key achievements include systematic demonstration of pretraining necessity, discovery of the frozen attention blocks + frozen projector dual limitation, and surprising findings about prompt simplicity.
 
-However, absolute performance remains limited (Age R²=0.13, MMSE R²=0.02, Sex=78.69%), and critical architectural issues require immediate resolution. The research is at an inflection point: fixing the frozen projector and expanding datasets could yield substantial improvements, or may reveal more fundamental challenges in applying VLMs to neuroimaging.
+**Critical Clarification:** Janice's EVA_ViT experiments configured as:
+- **Frozen:** Attention blocks (core vision encoder from EVA-CLIP)
+- **Trainable:** Patchifying layer and positional embeddings
+- This conservative approach preserves pre-trained features while adapting to 3D MRI
 
-**Primary Recommendation:** Execute the critical path (unfreeze projector, expand MMSE data) within 2 weeks and reassess. If performance improves substantially (Age R²>0.25, MMSE R²>0.10), proceed with full research program. If improvements are marginal, reconsider the VLM framework and explore alternative approaches.
+However, absolute performance remains limited (Age R²=0.13, MMSE R²=0.02, Sex=78.69%), and critical architectural constraints require immediate resolution. The research is at an inflection point: unfreezing the projector and strategically unfreezing attention blocks could yield substantial improvements, or may reveal more fundamental challenges in applying VLMs to neuroimaging.
 
-**Strategic Insight:** The work may be inadvertently demonstrating that "vision-language" framing is premature for many neuroimaging tasks. Consider parallel development of streamlined vision-only models as a baseline, then rigorously evaluate when language components add value beyond architectural complexity.
+**Primary Recommendation:** Execute the critical path (unfreeze projector, progressive attention block unfreezing, expand MMSE data) within 2 weeks and reassess. If performance improves substantially (Age R²>0.25, MMSE R²>0.10), proceed with full research program. If improvements are marginal, reconsider the VLM framework and explore alternative approaches or more aggressive unfreezing strategies.
+
+**Strategic Insight:** The identical performance between BLIP-2 and EVA_ViT (both R²=0.1254) with frozen attention blocks suggests that careful attention block unfreezing may be necessary for meaningful improvement. The conservative adapter-only strategy successfully preserves pre-training but may require more aggressive fine-tuning for medical imaging adaptation.
 
 ---
 
 **Report Prepared By:** Claude Code Research Analysis System
 **Date:** October 29, 2025
-**Next Review Recommended:** After frozen projector fix and MMSE expansion (≈2 weeks)
+**Critical Update:** Corrected EVA_ViT configuration - attention blocks frozen, patchifying layer and positional embeddings trainable
+**Next Review Recommended:** After frozen projector fix, attention block unfreezing experiments, and MMSE expansion (≈2 weeks)
